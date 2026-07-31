@@ -1,0 +1,13 @@
+.DS_Store
+*.log
+.hugo_build.lock
+site/public/
+site/resources/_gen/
+site/.hugo_build.lock
+tmp/
+.idea/
+.vscode/
+*.swp
+.env
+.env.*
+!.env.example
