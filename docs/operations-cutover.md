@@ -1,121 +1,151 @@
 # VPS Cutover Runbook — WordPress → Hugo
 
-Operator steps to deploy the Hugo blog on the production VPS, switch host Caddy from WordPress/LiteSpeed, and roll back if needed.
+Operator steps to deploy the Hugo blog on the sumopod VPS, switch host Caddy from WordPress/LiteSpeed, and roll back if needed.
 
-**Related:** [ADR-004](./decisions/ADR-004-compose-build-host-caddy.md), [`Caddyfile.snippet`](../Caddyfile.snippet), [`docs/qa-checklist.md`](./qa-checklist.md)
+**Related:** [ADR-004](./decisions/ADR-004-compose-build-host-caddy.md), [deploy design](./superpowers/specs/2026-07-31-vps-compose-caddy-deploy-design.md), [`Caddyfile.snippet`](../Caddyfile.snippet), [`docs/qa-checklist.md`](./qa-checklist.md)
+
+**Host:** `103.92.215.36` (Ubuntu) · **Install path:** `/opt/panjigautama-hugo` · **Network:** Docker `web`
 
 ## When to run
 
 - Local Hugo QA is complete ([`docs/qa-checklist.md`](./qa-checklist.md) dated pass).
-- You have SSH access to the VPS and permission to edit the host Caddyfile and stop the WordPress/LiteSpeed vhost for `panjigautama.com`.
+- You have SSH access to the VPS and permission to edit `/opt/caddy/Caddyfile` and stop the WordPress/LiteSpeed vhost for `panjigautama.com`.
 - Schedule a maintenance window; keep the WordPress stack **stopped but intact** for **48–72 hours** after cutover.
 
 ## Important: verify Compose on the VPS first
 
-During Tasks 7 and 8, **local Docker was unavailable** (daemon not running). The Compose image and container were **not** verified locally. Before changing host Caddy:
+Before changing host Caddy:
 
-1. Complete steps 1–4 below (clone, submodules, `docker compose build && up -d`, `curl` to `127.0.0.1:8080`).
-2. Only proceed to the Caddy flip (step 5) after the container serves HTTP 200 on localhost.
+1. Complete clone → submodule → `docker compose build && up -d`.
+2. Confirm HTTP 200 via `http://panjigautama-hugo:8080/` **on network `web`**.
+3. Only then merge the Caddy snippet and reload.
 
 ---
 
-## 1. SSH and sync the repo
+## 0. SSH deploy key (once, for script / GitHub Action)
+
+On a trusted machine (do **not** commit the private key):
 
 ```bash
-ssh <user>@<vps-host>
+ssh-keygen -t ed25519 -C "github-actions-panjigautama-hugo" -f ./panjigautama-hugo-deploy -N ""
+ssh-copy-id -i ./panjigautama-hugo-deploy.pub root@103.92.215.36
+ssh -i ./panjigautama-hugo-deploy root@103.92.215.36 'echo ok'
 ```
+
+GitHub repo secrets (when enabling the Action): `SSH_HOST=103.92.215.36`, `SSH_USER=root`, `SSH_PRIVATE_KEY` (private key file contents), `DEPLOY_PATH=/opt/panjigautama-hugo`. Prefer the key over putting the root password in CI.
+
+---
+
+## 1. SSH to the VPS
+
+```bash
+ssh root@103.92.215.36
+```
+
+---
+
+## 2. Ensure Docker network `web`
+
+```bash
+docker network ls | grep -w web || docker network create web
+```
+
+---
+
+## 3. Clone repo and initialize submodules
 
 First deploy:
 
 ```bash
-git clone https://github.com/rhapsodixx/panjigautama-hugo.git
-cd panjigautama-hugo
+cd /opt
+git clone https://github.com/rhapsodixx/panjigautama-hugo.git panjigautama-hugo
+cd /opt/panjigautama-hugo
+git submodule update --init --recursive
 ```
 
-Subsequent deploys:
+Subsequent deploys (manual):
 
 ```bash
-cd panjigautama-hugo   # or your chosen install path
+cd /opt/panjigautama-hugo
 git pull
-```
-
-## 2. Initialize git submodules
-
-The Bear Blog theme is a submodule; it must be present before the Docker build.
-
-```bash
 git submodule update --init --recursive
 ```
 
 Confirm `site/themes/hugo-bearblog/` exists and is not empty.
 
-## 3. Build and start the container
+---
 
-From the repo root (where `docker-compose.yml` lives):
+## 4. Build and start the container
+
+From `/opt/panjigautama-hugo` (where `docker-compose.yml` lives):
 
 ```bash
 docker compose build && docker compose up -d
+docker compose ps
+docker compose logs --tail=50 blog
 ```
 
 Expected:
 
 - Image builds Hugo in-stage and serves `public/` via in-container Caddy on port `8080`.
-- Compose publishes `127.0.0.1:8080:8080` (host Caddy owns public 80/443).
+- Container joins external network `web` (no host port publish).
+- `container_name` is `panjigautama-hugo`.
 
-Check container status:
+---
 
-```bash
-docker compose ps
-docker compose logs --tail=50 blog
-```
-
-## 4. Verify the container locally on the VPS
+## 5. Verify on Docker network `web`
 
 Before touching host Caddy:
 
 ```bash
-curl -sI http://127.0.0.1:8080/ | head -1
+docker run --rm --network web curlimages/curl:8.5.0 -sI http://panjigautama-hugo:8080/ | head -1
 # Expect: HTTP/1.1 200 OK
 
-curl -sI http://127.0.0.1:8080/about-me/ | head -1
-curl -sI http://127.0.0.1:8080/blog/ | head -1
+docker run --rm --network web curlimages/curl:8.5.0 -sI http://panjigautama-hugo:8080/about-me/ | head -1
+docker run --rm --network web curlimages/curl:8.5.0 -sI http://panjigautama-hugo:8080/blog/ | head -1
 ```
 
 If build or curl fails, **stop here**. Do not merge the Caddy snippet. Fix Compose/logs first.
 
 ---
 
-## 5. Merge host Caddy config and reload
+## 6. Merge host Caddy config and reload
 
-**Back up** the current `panjigautama.com` site block in the host Caddyfile (you need it for rollback).
+**Back up** the current site block for `panjigautama.com` (needed for rollback):
 
-Replace or update the site block with the contents of [`Caddyfile.snippet`](../Caddyfile.snippet):
+```bash
+cp /opt/caddy/Caddyfile /opt/caddy/Caddyfile.bak.$(date +%Y%m%d%H%M)
+nano /opt/caddy/Caddyfile
+```
+
+Replace or update the site block with [`Caddyfile.snippet`](../Caddyfile.snippet):
 
 ```caddy
 panjigautama.com, www.panjigautama.com, blog.kamisamanosumopod.my.id {
 	encode gzip
-	reverse_proxy 127.0.0.1:8080
+	reverse_proxy panjigautama-hugo:8080
 }
 ```
 
-**DNS (before or with this step):** point `blog.kamisamanosumopod.my.id` at this VPS (A/AAAA or CNAME) so Caddy can issue its certificate. Apex `panjigautama.com` / `www` as you already have them.
+Host Caddy must be on Docker network `web` so the name `panjigautama-hugo` resolves (same pattern as Vaultwarden).
 
-Validate and reload (adjust paths/commands for your install):
+**DNS:** point `blog.kamisamanosumopod.my.id` at this VPS before Caddy can issue its certificate. Apex/`www` as already configured.
 
-```bash
-# Example — use your host’s Caddy binary and config path
-caddy validate --config /etc/caddy/Caddyfile
-caddy reload --config /etc/caddy/Caddyfile
-```
-
-Systemd-managed Caddy (common on Linux):
+Validate and reload (adjust Caddy container name if different):
 
 ```bash
-sudo systemctl reload caddy
-# or: sudo caddy reload --config /etc/caddy/Caddyfile
+docker exec caddy caddy validate --config /etc/caddy/Caddyfile
+docker exec caddy caddy reload --config /etc/caddy/Caddyfile
 ```
 
-Confirm HTTPS from the VPS or your workstation:
+If Caddy is managed by systemd on the host instead:
+
+```bash
+caddy validate --config /opt/caddy/Caddyfile
+systemctl reload caddy
+```
+
+Confirm HTTPS:
 
 ```bash
 curl -sI https://panjigautama.com/ | head -1
@@ -123,9 +153,10 @@ curl -sI https://blog.kamisamanosumopod.my.id/ | head -1
 ```
 
 Note: Hugo `baseURL` stays `https://panjigautama.com`, so some absolute links in HTML still point at the apex domain. Paths and content work on both hosts.
+
 ---
 
-## 6. Stop WordPress and LiteSpeed (do not delete)
+## 7. Stop WordPress and LiteSpeed (do not delete)
 
 Stop the WordPress/LiteSpeed vhost for `panjigautama.com` **without deleting** databases, files, or containers.
 
@@ -141,7 +172,7 @@ Document what you stopped and where data lives. Keep everything recoverable for 
 
 ---
 
-## 7. Production smoke checks
+## 8. Production smoke checks
 
 Run after Caddy points at Hugo. See also [`docs/qa-checklist.md`](./qa-checklist.md).
 
@@ -169,25 +200,26 @@ for host in https://panjigautama.com https://blog.kamisamanosumopod.my.id; do
   done
 done
 ```
+
 ---
 
-## 8. Rollback (within 48–72 h window)
+## 9. Rollback (within 48–72 h window)
 
 If production checks fail or you need to revert:
 
-1. **Restore the prior Caddy site block** for `panjigautama.com` (from backup in step 5) so it reverse-proxies to the WordPress/LiteSpeed upstream again.
+1. **Restore the prior Caddy site block** from the backup in step 6.
 2. Reload Caddy:
 
    ```bash
-   caddy reload --config /etc/caddy/Caddyfile
-   # or: sudo systemctl reload caddy
+   docker exec caddy caddy reload --config /etc/caddy/Caddyfile
+   # or: systemctl reload caddy
    ```
 
-3. **Start WordPress/LiteSpeed** for the vhost (reverse of step 6).
-4. **Stop the Hugo container** (optional but avoids port confusion on localhost):
+3. **Start WordPress/LiteSpeed** for the vhost (reverse of step 7).
+4. **Stop the Hugo container** (optional):
 
    ```bash
-   cd panjigautama-hugo
+   cd /opt/panjigautama-hugo
    docker compose stop
    ```
 
@@ -197,8 +229,18 @@ After the rollback window expires and Hugo is stable, decommission WordPress/Lit
 
 ---
 
-## Post-cutover
+## Post-cutover / new posts
 
 - Monitor GA4 and server logs for 48–72 hours.
 - After the rollback window, remove or archive the WordPress stack if no longer needed.
-- Future content updates: `git pull`, `git submodule update --init --recursive`, `docker compose build && docker compose up -d`.
+- **New or edited posts:** edit Markdown locally → commit → push `main` → deploy:
+
+  ```bash
+  # On VPS (or via scripts/deploy.sh / GitHub Action):
+  cd /opt/panjigautama-hugo
+  git pull
+  git submodule update --init --recursive
+  docker compose build && docker compose up -d
+  ```
+
+- No Docker Hub. The VPS always builds from git ([ADR-004](./decisions/ADR-004-compose-build-host-caddy.md)).

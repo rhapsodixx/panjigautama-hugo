@@ -15,7 +15,7 @@ Requirements:
 - Keep a single canonical site identity for feeds, sitemap, and social cards
 
 ## Decision
-List all serving hostnames on **one** host Caddy site block that reverse-proxies to `127.0.0.1:8080`:
+List all serving hostnames on **one** host Caddy site block that reverse-proxies to `panjigautama-hugo:8080` on Docker network `web` ([ADR-004](./ADR-004-compose-build-host-caddy.md)):
 
 - `panjigautama.com`
 - `www.panjigautama.com`

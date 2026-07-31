@@ -13,8 +13,9 @@ Personal blog for [panjigautama.com](https://panjigautama.com), migrating from W
 | Analytics | Google Analytics 4 — measurement ID `G-60P3WJPWMJ` |
 | Favicon | Copied from live panjigautama.com into Hugo `static/` |
 | Local serve | `hugo server` (site root under `site/`) |
-| Production | Docker multi-stage build + Compose on VPS |
-| Edge | Existing host **Caddy** reverse-proxy (TLS) → blog container |
+| Production | Docker multi-stage build + Compose on VPS (`/opt/panjigautama-hugo`, network `web`) |
+| Edge | Host **Caddy** on `web` → `panjigautama-hugo:8080` |
+| Deploy | Git pull + Compose rebuild; `scripts/deploy.sh` + GitHub Action (SSH key); no Docker Hub |
 | Domains | `panjigautama.com`, `www.panjigautama.com`, `blog.kamisamanosumopod.my.id` (same site; canonical `baseURL` = panjigautama.com) |
 | Repo | Public GitHub: `panjigautama-hugo` |
 
@@ -24,8 +25,10 @@ Personal blog for [panjigautama.com](https://panjigautama.com), migrating from W
 |-----|---------|
 | [`AGENTS.md`](./AGENTS.md) | Entry point for agents; points here |
 | [`docs/superpowers/specs/2026-07-31-wordpress-to-hugo-migration-design.md`](./docs/superpowers/specs/2026-07-31-wordpress-to-hugo-migration-design.md) | Approved migration design |
+| [`docs/superpowers/specs/2026-07-31-vps-compose-caddy-deploy-design.md`](./docs/superpowers/specs/2026-07-31-vps-compose-caddy-deploy-design.md) | VPS Compose + Caddy + git deploy |
+| [`docs/operations-cutover.md`](./docs/operations-cutover.md) | Cutover runbook (Ubuntu commands) |
 | [`docs/decisions/`](./docs/decisions/) | Architecture Decision Records (ADRs) |
-| `Caddyfile.snippet` | Host Caddy site-block example (added during implementation) |
+| `Caddyfile.snippet` | Host Caddy site-block example |
 
 ## Project layout (target)
 
@@ -57,7 +60,7 @@ docs/superpowers/   # Specs and plans
 | [ADR-001](./docs/decisions/ADR-001-hugo-bearblog-over-wordpress.md) | Hugo + hugo-bearblog over WordPress |
 | [ADR-002](./docs/decisions/ADR-002-root-level-permalinks.md) | Root-level permalinks |
 | [ADR-003](./docs/decisions/ADR-003-media-under-images.md) | Media under `/images/` (no `/wp-content/` redirects) |
-| [ADR-004](./docs/decisions/ADR-004-compose-build-host-caddy.md) | Compose build on VPS + host Caddy reverse proxy |
+| [ADR-004](./docs/decisions/ADR-004-compose-build-host-caddy.md) | Compose build on VPS + Caddy on `web` (container name) |
 | [ADR-005](./docs/decisions/ADR-005-multi-domain-aliases.md) | Multi-domain aliases serve same site (no redirect) |
 | [ADR-006](./docs/decisions/ADR-006-homepage-presentation.md) | Homepage: Outfit, bullets, Hugo pagination |
 
