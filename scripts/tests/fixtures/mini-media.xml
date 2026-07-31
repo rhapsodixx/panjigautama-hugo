@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:wp="http://wordpress.org/export/1.2/">
+  <channel>
+    <item>
+      <title><![CDATA[vue-1]]></title>
+      <wp:post_type><![CDATA[attachment]]></wp:post_type>
+      <wp:status><![CDATA[inherit]]></wp:status>
+      <wp:attachment_url><![CDATA[https://panjigautama.com/wp-content/uploads/2021/01/vue-1.png]]></wp:attachment_url>
+    </item>
+    <item>
+      <title><![CDATA[Not Media]]></title>
+      <wp:post_type><![CDATA[post]]></wp:post_type>
+      <wp:status><![CDATA[publish]]></wp:status>
+    </item>
+  </channel>
+</rss>
