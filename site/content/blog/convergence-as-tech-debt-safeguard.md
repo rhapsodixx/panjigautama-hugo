@@ -13,7 +13,7 @@ categories:
 
 Managing technical debt is never an easy game. Even if we have ideas, we need to compare the impact with the product initiatives/feature that we need to build to ensure we stay strong on the product side and boost the business. So what to do? lo and behold : Diverge-Convergence, comes as one of the strategies.
 
-![](https://panjigautama.com/wp-content/uploads/2023/08/ideas-2-1024x640.jpg)
+![](/images/ideas-2.jpg)
 
 Each Sprint diverged into two streams: shaping & building, execute convergence sprint every triples.
 

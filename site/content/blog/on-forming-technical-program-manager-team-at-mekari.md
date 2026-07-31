@@ -9,7 +9,7 @@ categories:
   - "team"
 ---
 
-![](https://panjigautama.com/wp-content/uploads/2021/01/0_v_qNjzpzTWJsFCtW-1024x896.jpg)[credit ](<https://medium.com/swlh/product-manager-vs-project-manager-vs-technical-program-manager-e45d0cf32e01>)
+![](/images/0_v_qNjzpzTWJsFCtW.jpg)[credit ](<https://medium.com/swlh/product-manager-vs-project-manager-vs-technical-program-manager-e45d0cf32e01>)
 
 As the company growing and more product verticals are coming in, and more competitors coming in not only from Indonesia but also big players from outside the country, there are needs from stakeholders and management (C/VP levels) to ensure we are delivering our initiatives more than ever. Hence, ensuring a team to be self-organized, transparent, and great visibility of ongoing and upcoming project progress are very critical. Spotting potential delays early and doing continuous improvement on how we structure the team and do communication within the team is also essential for us to achieve effective & efficient productivity.
 

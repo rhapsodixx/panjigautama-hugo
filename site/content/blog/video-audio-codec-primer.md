@@ -33,7 +33,7 @@ if there is encoding, is there **decoding**? Yes, in the context of video stream
 
 Codec stands for enCOder and DECoder. As the name implies, the Encoder compresses the file and Decoded to decode the file on the player. Video may consist of Audio, each Video & Audio has a variety of Codec, and it comes with a variety of supported devices. Note that typically H264 is used up to 1080p resolution and H265/VP9/AV1 is up to 4K.
 
-![](https://panjigautama.com/wp-content/uploads/2022/09/6f603544-2f95-4c57-9c5f-d26e71fd6c2b-1024x381.png)Bitmovin Definitive Guide of Video Codec
+![](/images/6f603544-2f95-4c57-9c5f-d26e71fd6c2b.png)Bitmovin Definitive Guide of Video Codec
 
 There’s a zero-cost entry level if one has less than 100K subscribers.
 
@@ -143,7 +143,7 @@ The above workflow is possible can be done with the well-known cloud/open source
 
 ### ABR Format for Web Application
 
-![](https://panjigautama.com/wp-content/uploads/2022/09/6b3e7ba4-803d-4385-bdce-a838746efcef-1024x871.png)<https://caniuse.com/?search=hls> as of 2022-09-15
+![](/images/6b3e7ba4-803d-4385-bdce-a838746efcef.png)<https://caniuse.com/?search=hls> as of 2022-09-15
 
 ### ABR Format for Mobile Application
 

@@ -20,6 +20,6 @@ here is what I've tried and learned so far:
 \- subvocalization is a big no, skim/scan with a finger pointer or pencil helps  
 \- juggling between fiction (notice Dune novel there 🥹)and non-fiction books helps to train flexibility to skim text with low information density vs key sentences.
 
-![](https://panjigautama.com/wp-content/uploads/2023/04/IMG_2563-768x1024.jpeg)
+![](/images/IMG_2563-scaled.jpeg)
 
 any other tips?

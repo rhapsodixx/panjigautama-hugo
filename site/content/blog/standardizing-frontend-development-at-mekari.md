@@ -84,7 +84,7 @@ Many have [claims ](<https://www.sitepoint.com/vue-right-framework/>)seen junior
 
 One of the biggest differences between Vue and React is the way the view layer is built. By default, Vue uses HTML templates, but there’s an option to write in JSX. In React, on the other hand, there’s solely JSX. Vue’s traditional separation of concerns into HTML, CSS, and JS makes it easier even for beginner frontend developers to learn how to create Web applications. HTML templates are also familiar to most Web designers, and thus improve collaboration between developers and designers. React’s JavaScript Expressions (JSX) combine HTML and CSS together into JavaScript. This XML-like syntax lets developers build self-contained UI components with view-rendering instructions included.
 
-![](https://panjigautama.com/wp-content/uploads/2021/01/vue-4-843x1024.jpeg)
+![](/images/vue-4.jpeg)
 
 Few companies that use React are Facebook, Instagram, Netflix, New York Times, Yahoo, Whatsapp, Codecademy, Dropbox, Airbnb, Atlassian, Intercom, Microsoft, Slack, Storybook. Companies that use Vue are Xiaomi, Codeship, Reuters, Adobe, Alibaba, WizzAir, EuroNews, Grammarly, Gitlab, and Laracasts, Behance.
 

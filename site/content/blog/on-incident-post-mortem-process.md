@@ -15,7 +15,7 @@ Recurring incidents are the enemy of scalability. Recurring incidents steal time
 
 Failing to recognize and resolve our past problems means failing to learn from our past mistakes in either architecture, engineering, process, and operations, and also communication.
 
-![](https://panjigautama.com/wp-content/uploads/2021/02/d44df4d8-6ba6-48f4-941a-361bdfe4d0f0-1024x399.png)Incident Management Workflow
+![](/images/d44df4d8-6ba6-48f4-941a-361bdfe4d0f0.png)Incident Management Workflow
 
 ### **Incident**
 
@@ -47,7 +47,7 @@ Common post mortem trigger may include any incident that related but not limited
 
 Mekari has an opinionated post mortem, intended to have same template across mekari engineering team to ensure cross pollination knowledge. Post Mortem available as a template in our Confluence.
 
-![](https://panjigautama.com/wp-content/uploads/2021/02/screencapture-sleekr-atlassian-net-wiki-spaces-814196484-pages-1984004097-Post-Mortem-Template-2021-02-07-12_45_48-514x1024.jpg)
+![](/images/screencapture-sleekr-atlassian-net-wiki-spaces-814196484-pages-1984004097-Post-Mortem-Template-2021-02-07-12_45_48-scaled.jpg)
 
 **References :**
 

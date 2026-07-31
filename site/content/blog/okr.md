@@ -8,7 +8,7 @@ categories:
   - "OKR"
 ---
 
-![](https://panjigautama.com/wp-content/uploads/2021/01/67de3130-3c19-42a1-b015-f353970b4c6a-1024x772.png)
+![](/images/67de3130-3c19-42a1-b015-f353970b4c6a.png)
 
 ### Why do we care about OKR ?
 

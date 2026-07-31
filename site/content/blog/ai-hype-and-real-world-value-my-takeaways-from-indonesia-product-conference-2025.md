@@ -9,7 +9,7 @@ categories:
   - "Product"
 ---
 
-![](https://panjigautama.com/wp-content/uploads/2025/09/IMG_2675-768x1024.jpg)
+![](/images/IMG_2675-scaled.jpg)
 
 It was great to be back in the buzz of a proper tech conference last week. I headed over to the Indonesia Product Conference 2025, an event Apiary has been running for a while now, and it’s clear they keep leveling up. It feels like forever since we've had these big, in-person gatherings post-COVID, so the energy was palpable.
 
@@ -23,7 +23,7 @@ A common thread ran through nearly every talk: AI is here to _augment_ human cap
 
 This means we still need to master the fundamentals—from data gathering and cleansing to deriving real insights and foresights.
 
-![](https://panjigautama.com/wp-content/uploads/2025/09/threestagesofproductdevisionmaking-1024x281.png)
+![](/images/threestagesofproductdevisionmaking-scaled.png)
 
 The CEO of **MainStory** , a startup focused on kid's education and parenting, gave a perfect example of this. He explained that their AI isn't there to replace human experts like parenting influencers or doctors. Instead, it’s used to supercharge their content audit and quality control process, making their human experts faster and more effective. He even shared some of their key success metrics for this approach:
 
@@ -43,7 +43,7 @@ His point was that a grand vision isn't enough. The metaverse taught us that we 
 
 He shared a simple but effective product prioritization framework for evaluating AI initiatives, emphasizing the need to chase tangible value. Think of **Duolingo** 's AI features—they directly drive user growth and revenue, making the product stickier and more effective. That's the goal. We need to ask ourselves: is this AI feature a "nice-to-have" novelty, or does it fundamentally improve our core value proposition?
 
-![](https://panjigautama.com/wp-content/uploads/2025/09/productprioritizationdiagram-1024x953.png)
+![](/images/productprioritizationdiagram.png)
 
 ### **3\. Your Data Moat is Dug by Talking to Real Users**
 

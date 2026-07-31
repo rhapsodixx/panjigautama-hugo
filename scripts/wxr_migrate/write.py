@@ -35,7 +35,16 @@ def write_content(
     posts = pages = 0
 
     for item in items:
-        if item.status != "publish" or item.post_type not in {"post", "page"}:
+        if item.slug == "sprout-test":
+            continue
+        if item.post_type not in {"post", "page"}:
+            continue
+        is_privacy_draft = (
+            item.post_type == "page"
+            and item.slug == "privacy-policy"
+            and item.status != "publish"
+        )
+        if item.status != "publish" and not is_privacy_draft:
             continue
         if not item.title.strip():
             raise ValueError(f"Empty title for slug={item.slug!r}")

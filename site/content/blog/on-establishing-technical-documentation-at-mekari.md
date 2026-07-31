@@ -60,7 +60,7 @@ RFC (well..practically anything) without purpose will be a waste of time. Hence,
 
 Here is a good reference that shamelessly taken from [Lyft engineering blog post](<https://eng.lyft.com/awesome-tech-specs-86eea8e45bb9>).
 
-![](https://panjigautama.com/wp-content/uploads/2021/03/d3df9312-0617-4d15-af58-aa4ee8d4bf86-1024x351.png)
+![](/images/d3df9312-0617-4d15-af58-aa4ee8d4bf86.png)
 
 ### **Opinionated RFC template**
 
@@ -74,7 +74,7 @@ However, note that the RFC process is an iterative process, its important for us
 
 We use this simple checklist, if the answer YES to any of the questions below, engineer expected to create RFC  
 
-![](https://panjigautama.com/wp-content/uploads/2021/03/Screen-Shot-2021-03-04-at-10.17.41-1024x661.png)
+![](/images/Screen-Shot-2021-03-04-at-10.17.41.png)
 
 ## When NOT to use RFCs
 

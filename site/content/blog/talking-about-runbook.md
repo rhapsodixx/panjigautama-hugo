@@ -39,7 +39,7 @@ At tiptip, runbooks are extremely helpful for two kinds of operations:
 
 At TipTip, we have our own **Production Incident Runbook Template** on confluence, just create a new page and choose the template.
 
-![](https://panjigautama.com/wp-content/uploads/2023/01/bc338fab-075a-4dba-b2e2-8551e2b61fa7-1024x557.png)
+![](/images/bc338fab-075a-4dba-b2e2-8551e2b61fa7.png)
 
 ### References
 

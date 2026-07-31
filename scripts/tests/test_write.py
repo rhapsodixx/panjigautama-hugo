@@ -52,3 +52,49 @@ def test_write_content_posts_and_pages(tmp_path: Path):
     assert "/images/vue-1.png" in post
     assert "wp-content" not in post
     assert (tmp_path / "about-me.md").exists()
+
+
+def test_write_skips_sprout_test_and_includes_privacy_policy_draft(tmp_path: Path):
+    items = [
+        ContentItem(
+            title="Sprout Test",
+            slug="sprout-test",
+            date="2021-01-01 10:00:00",
+            lastmod="2021-01-01 10:00:00",
+            status="publish",
+            post_type="page",
+            categories=[],
+            tags=[],
+            content_html="<p>Sprout</p>",
+        ),
+        ContentItem(
+            title="Privacy Policy",
+            slug="privacy-policy",
+            date="2021-01-01 10:00:00",
+            lastmod="2021-01-01 10:00:00",
+            status="draft",
+            post_type="page",
+            categories=[],
+            tags=[],
+            content_html="<p>Privacy</p>",
+        ),
+        ContentItem(
+            title="About Me",
+            slug="about-me",
+            date="2021-01-01 10:00:00",
+            lastmod="2021-01-01 10:00:00",
+            status="publish",
+            post_type="page",
+            categories=[],
+            tags=[],
+            content_html="<p>About</p>",
+        ),
+    ]
+    posts, pages = write_content(items, {}, tmp_path)
+    assert posts == 0
+    assert pages == 2
+    assert not (tmp_path / "sprout-test.md").exists()
+    privacy = (tmp_path / "privacy-policy.md").read_text()
+    assert 'title: "Privacy Policy"' in privacy
+    assert "Privacy" in privacy
+    assert (tmp_path / "about-me.md").exists()
