@@ -9,7 +9,7 @@ Accepted
 ## Revised
 2026-07-31 — Align with sumopod Vaultwarden pattern: external Docker network `web`, Caddy proxies by container name; git-based content updates; local deploy script + GitHub Action. See [deploy design](../superpowers/specs/2026-07-31-vps-compose-caddy-deploy-design.md).
 
-2026-07-31 — Production on sumopod (`103.92.215.36`): `/opt/panjigautama-hugo` live; host Caddy container `caddy-caddy-1`; GitHub Actions secrets configured (SSH key + host fingerprint). Alias `blog.kamisamanosumopod.my.id` serves Hugo over HTTPS. Apex/www remain on the previous host until DNS cutover (add them to the Caddy site block only after A/AAAA point at sumopod, to avoid ACME failures).
+2026-07-31 — Production on sumopod (`103.92.215.36`): `/opt/panjigautama-hugo` live; host Caddy container `caddy-caddy-1`; GitHub Actions secrets configured (SSH deploy key). Alias `blog.kamisamanosumopod.my.id` serves Hugo over HTTPS. Apex/www remain on the previous host until DNS cutover (add them to the Caddy site block only after A/AAAA point at sumopod, to avoid ACME failures). Host-fingerprint pin in appleboy/ssh-action deferred (mismatch against known-good OpenSSH SHA256 fingerprints).
 
 ## Context
 The production VPS (sumopod, Ubuntu) already runs Caddy as the TLS/edge reverse proxy and hosts other apps in Docker Compose on an external network named `web` (e.g. Vaultwarden: Caddy `reverse_proxy vaultwarden:80`). The blog should fit that model rather than introducing a second public web server, a container registry, or host-port publishing.
@@ -26,7 +26,7 @@ On the VPS:
 - Do **not** publish host ports; host Caddy (also on `web`) reverse-proxies `panjigautama-hugo:8080`.
 - Do **not** push images to Docker Hub / GHCR; the VPS builds from git.
 - Ongoing deploys: `git pull --ff-only` + submodule update + `compose build && up`, via `scripts/deploy.sh` and/or GitHub Action `.github/workflows/deploy.yml` on push to `main`.
-- CI authenticates with an SSH **deploy key** and verifies the host via `SSH_HOST_FINGERPRINT` (never store the root password or private key in the git repo).
+- CI authenticates with an SSH **deploy key** (never store the root password or private key in the git repo). Optional host-fingerprint pinning via appleboy is deferred until it accepts this host’s keys reliably.
 
 Provide a `Caddyfile.snippet` documenting the **target** site block (all public hostnames). Production may temporarily list only hostnames whose DNS already points at sumopod.
 
@@ -39,8 +39,8 @@ Provide a `Caddyfile.snippet` documenting the **target** site block (all public 
 | `SSH_HOST` | VPS IP / hostname (`103.92.215.36`) |
 | `SSH_USER` | SSH user (`root`) |
 | `SSH_PRIVATE_KEY` | Deploy private key PEM (set via `gh secret set`, never commit) |
-| `SSH_HOST_FINGERPRINT` | Host key fingerprint (`ssh-keyscan` → `ssh-keygen -lf`) |
 | `DEPLOY_PATH` | `/opt/panjigautama-hugo` |
+| `SSH_HOST_FINGERPRINT` | Optional; intended for appleboy host-key pin. **Not wired in the workflow today** — drone-ssh reported fingerprint mismatch for all correct OpenSSH SHA256 host-key fingerprints on this VPS (2026-07-31). Revisit when multi-algo pinning works; rely on fixed IP + deploy key until then. |
 
 ## Alternatives Considered
 

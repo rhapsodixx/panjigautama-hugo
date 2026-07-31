@@ -32,12 +32,10 @@ ssh-copy-id -i ./panjigautama-hugo-deploy.pub root@103.92.215.36
 ssh -i ./panjigautama-hugo-deploy root@103.92.215.36 'echo ok'
 ```
 
-Host fingerprint (for Action host-key verification):
+Host fingerprint (optional; not required by the current workflow — see ADR-004):
 
 ```bash
 ssh-keyscan -t ed25519 103.92.215.36 2>/dev/null | ssh-keygen -lf -
-# Example form: 256 SHA256:… 103.92.215.36 (ED25519)
-# Use the SHA256:… value as SSH_HOST_FINGERPRINT
 ```
 
 Set GitHub Actions secrets with the CLI (values go to GitHub only — never commit them):
@@ -46,7 +44,6 @@ Set GitHub Actions secrets with the CLI (values go to GitHub only — never comm
 gh secret set SSH_HOST -R rhapsodixx/panjigautama-hugo --body '103.92.215.36'
 gh secret set SSH_USER -R rhapsodixx/panjigautama-hugo --body 'root'
 gh secret set DEPLOY_PATH -R rhapsodixx/panjigautama-hugo --body '/opt/panjigautama-hugo'
-gh secret set SSH_HOST_FINGERPRINT -R rhapsodixx/panjigautama-hugo --body 'SHA256:…'
 gh secret set SSH_PRIVATE_KEY -R rhapsodixx/panjigautama-hugo < ./panjigautama-hugo-deploy
 gh secret list -R rhapsodixx/panjigautama-hugo
 ```
