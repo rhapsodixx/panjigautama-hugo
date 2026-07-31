@@ -1,9 +1,15 @@
-# Merge into the host Caddyfile (TLS already handled by host Caddy).
-# Host Caddy must share Docker network `web` with the blog container
+# Merge into the host Caddyfile at /opt/caddy/Caddyfile (TLS by host Caddy).
+# Host Caddy Compose service runs as container caddy-caddy-1 on Docker network `web`
 # (same pattern as Vaultwarden: reverse_proxy <container>:port).
-# Both apex and alias domains serve the same Hugo container (multi-domain option A).
-# Canonical Hugo baseURL remains https://panjigautama.com
+#
+# TARGET (after apex DNS points at sumopod 103.92.215.36):
 panjigautama.com, www.panjigautama.com, blog.kamisamanosumopod.my.id {
 	encode gzip
 	reverse_proxy panjigautama-hugo:8080
 }
+#
+# PHASED (current production until apex DNS cutover): only list hostnames
+# that already resolve here, e.g.:
+#   blog.kamisamanosumopod.my.id { ... reverse_proxy panjigautama-hugo:8080 }
+# Adding apex/www before DNS moves causes ACME certificate failures/retries.
+# Canonical Hugo baseURL remains https://panjigautama.com

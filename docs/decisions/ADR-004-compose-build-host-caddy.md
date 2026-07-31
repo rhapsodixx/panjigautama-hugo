@@ -9,6 +9,8 @@ Accepted
 ## Revised
 2026-07-31 — Align with sumopod Vaultwarden pattern: external Docker network `web`, Caddy proxies by container name; git-based content updates; local deploy script + GitHub Action. See [deploy design](../superpowers/specs/2026-07-31-vps-compose-caddy-deploy-design.md).
 
+2026-07-31 — Production on sumopod (`103.92.215.36`): `/opt/panjigautama-hugo` live; host Caddy container `caddy-caddy-1`; GitHub Actions secrets configured (SSH key + host fingerprint). Alias `blog.kamisamanosumopod.my.id` serves Hugo over HTTPS. Apex/www remain on the previous host until DNS cutover (add them to the Caddy site block only after A/AAAA point at sumopod, to avoid ACME failures).
+
 ## Context
 The production VPS (sumopod, Ubuntu) already runs Caddy as the TLS/edge reverse proxy and hosts other apps in Docker Compose on an external network named `web` (e.g. Vaultwarden: Caddy `reverse_proxy vaultwarden:80`). The blog should fit that model rather than introducing a second public web server, a container registry, or host-port publishing.
 
@@ -23,11 +25,22 @@ On the VPS:
 - `docker compose build && up` builds and runs the container on the **external** Docker network `web`.
 - Do **not** publish host ports; host Caddy (also on `web`) reverse-proxies `panjigautama-hugo:8080`.
 - Do **not** push images to Docker Hub / GHCR; the VPS builds from git.
-- Ongoing deploys: `git pull` + submodule update + `compose build && up`, via `scripts/deploy.sh` and/or a GitHub Action on push to `main`, authenticated with an SSH deploy key (not a password in CI).
+- Ongoing deploys: `git pull --ff-only` + submodule update + `compose build && up`, via `scripts/deploy.sh` and/or GitHub Action `.github/workflows/deploy.yml` on push to `main`.
+- CI authenticates with an SSH **deploy key** and verifies the host via `SSH_HOST_FINGERPRINT` (never store the root password or private key in the git repo).
 
-Provide a `Caddyfile.snippet` documenting the site block to merge into the host Caddy config (`/opt/caddy/Caddyfile` on sumopod).
+Provide a `Caddyfile.snippet` documenting the **target** site block (all public hostnames). Production may temporarily list only hostnames whose DNS already points at sumopod.
 
 **Which hostnames** appear on that block, and whether aliases redirect or serve content, is decided in [ADR-005](./ADR-005-multi-domain-aliases.md).
+
+### GitHub Actions secrets (repo `panjigautama-hugo`)
+
+| Secret | Purpose |
+|--------|---------|
+| `SSH_HOST` | VPS IP / hostname (`103.92.215.36`) |
+| `SSH_USER` | SSH user (`root`) |
+| `SSH_PRIVATE_KEY` | Deploy private key PEM (set via `gh secret set`, never commit) |
+| `SSH_HOST_FINGERPRINT` | Host key fingerprint (`ssh-keyscan` → `ssh-keygen -lf`) |
+| `DEPLOY_PATH` | `/opt/panjigautama-hugo` |
 
 ## Alternatives Considered
 
@@ -49,11 +62,13 @@ Provide a `Caddyfile.snippet` documenting the site block to merge into the host 
 ### Run Hugo beside WordPress and flip DNS gradually
 - Pros: Parallel validation on production domain pieces
 - Cons: More moving parts; staging preference is local-then-cutover
-- Rejected: Chosen cutover is local QA then production swap
+- Partially revisited in ops: alias hostname went live on sumopod first; apex DNS cutover is a separate step so ACME only runs for hostnames that already resolve here
 
 ## Consequences
-- Deploy docs must cover Compose on `web`, host Caddy reload, SSH deploy key setup, and the local script / GitHub Action
+- Deploy docs must cover Compose on `web`, host Caddy reload (`docker exec caddy-caddy-1 caddy reload …`), SSH deploy key setup, fingerprint secret, and the local script / GitHub Action
 - Blog container must join `web` and must not publish public 80/443
 - Hostname list and alias policy: see ADR-005 (canonical Hugo `baseURL` remains the apex)
-- Rollback = repoint Caddy to WordPress/LiteSpeed while that stack remains recoverable (~48–72h)
-- New posts/edits require a git push and a VPS rebuild (automated or scripted), not a WordPress admin UI
+- Until apex DNS moves, only list resolving hostnames in the live Caddyfile; keep `Caddyfile.snippet` as the full target list
+- Rollback for apex = leave DNS/WordPress on the previous host; for the alias = restore prior Caddyfile backup and/or stop the Hugo container
+- New posts/edits require a git push to `main` (Action) or `./scripts/deploy.sh`, not a WordPress admin UI
+- Private keys and `.env` files must stay out of git (`.gitignore`); rotate the deploy key if it is ever committed or leaked

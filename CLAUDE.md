@@ -15,8 +15,9 @@ Personal blog for [panjigautama.com](https://panjigautama.com), migrating from W
 | Local serve | `hugo server` (site root under `site/`) |
 | Production | Docker multi-stage build + Compose on VPS (`/opt/panjigautama-hugo`, network `web`) |
 | Edge | Host **Caddy** on `web` → `panjigautama-hugo:8080` |
-| Deploy | Git pull + Compose rebuild; `scripts/deploy.sh` + GitHub Action (SSH key); no Docker Hub |
-| Domains | `panjigautama.com`, `www.panjigautama.com`, `blog.kamisamanosumopod.my.id` (same site; canonical `baseURL` = panjigautama.com) |
+| Deploy | Git pull + Compose rebuild; `scripts/deploy.sh` + GitHub Action (SSH key + host fingerprint secrets); no Docker Hub |
+| Domains | Target: apex + www + `blog.kamisamanosumopod.my.id` (ADR-005). Live on sumopod today: blog alias; apex DNS cutover pending |
+| VPS | sumopod `103.92.215.36`; install `/opt/panjigautama-hugo`; edge Caddy container `caddy-caddy-1` |
 | Repo | Public GitHub: `panjigautama-hugo` |
 
 ## Documentation

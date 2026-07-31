@@ -22,9 +22,9 @@ Before changing host Caddy:
 
 ---
 
-## 0. SSH deploy key (once, for script / GitHub Action)
+## 0. SSH deploy key + GitHub Actions secrets (once)
 
-On a trusted machine (do **not** commit the private key):
+On a trusted machine (do **not** commit the private key; keep it outside the repo or gitignored):
 
 ```bash
 ssh-keygen -t ed25519 -C "github-actions-panjigautama-hugo" -f ./panjigautama-hugo-deploy -N ""
@@ -32,7 +32,31 @@ ssh-copy-id -i ./panjigautama-hugo-deploy.pub root@103.92.215.36
 ssh -i ./panjigautama-hugo-deploy root@103.92.215.36 'echo ok'
 ```
 
-GitHub repo secrets (when enabling the Action): `SSH_HOST=103.92.215.36`, `SSH_USER=root`, `SSH_PRIVATE_KEY` (private key file contents), `DEPLOY_PATH=/opt/panjigautama-hugo`. Prefer the key over putting the root password in CI.
+Host fingerprint (for Action host-key verification):
+
+```bash
+ssh-keyscan -t ed25519 103.92.215.36 2>/dev/null | ssh-keygen -lf -
+# Example form: 256 SHA256:… 103.92.215.36 (ED25519)
+# Use the SHA256:… value as SSH_HOST_FINGERPRINT
+```
+
+Set GitHub Actions secrets with the CLI (values go to GitHub only — never commit them):
+
+```bash
+gh secret set SSH_HOST -R rhapsodixx/panjigautama-hugo --body '103.92.215.36'
+gh secret set SSH_USER -R rhapsodixx/panjigautama-hugo --body 'root'
+gh secret set DEPLOY_PATH -R rhapsodixx/panjigautama-hugo --body '/opt/panjigautama-hugo'
+gh secret set SSH_HOST_FINGERPRINT -R rhapsodixx/panjigautama-hugo --body 'SHA256:…'
+gh secret set SSH_PRIVATE_KEY -R rhapsodixx/panjigautama-hugo < ./panjigautama-hugo-deploy
+gh secret list -R rhapsodixx/panjigautama-hugo
+```
+
+Workflow: [`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml) (push to `main` or `workflow_dispatch`). Prefer the deploy key over putting the root password in CI. See [ADR-004](./decisions/ADR-004-compose-build-host-caddy.md).
+
+### Production note (2026-07-31)
+
+- Hugo container is live on sumopod; Caddy (`caddy-caddy-1`) serves **https://blog.kamisamanosumopod.my.id/**.
+- Apex `panjigautama.com` / `www` still resolve to the previous host until DNS cutover — do not add them to the live Caddyfile until A/AAAA point at `103.92.215.36`.
 
 ---
 
@@ -131,11 +155,11 @@ Host Caddy must be on Docker network `web` so the name `panjigautama-hugo` resol
 
 **DNS:** point `blog.kamisamanosumopod.my.id` at this VPS before Caddy can issue its certificate. Apex/`www` as already configured.
 
-Validate and reload (adjust Caddy container name if different):
+Validate and reload (sumopod Compose service name → container `caddy-caddy-1`):
 
 ```bash
-docker exec caddy caddy validate --config /etc/caddy/Caddyfile
-docker exec caddy caddy reload --config /etc/caddy/Caddyfile
+docker exec caddy-caddy-1 caddy validate --config /etc/caddy/Caddyfile
+docker exec caddy-caddy-1 caddy reload --config /etc/caddy/Caddyfile
 ```
 
 If Caddy is managed by systemd on the host instead:
@@ -211,7 +235,7 @@ If production checks fail or you need to revert:
 2. Reload Caddy:
 
    ```bash
-   docker exec caddy caddy reload --config /etc/caddy/Caddyfile
+   docker exec caddy-caddy-1 caddy reload --config /etc/caddy/Caddyfile
    # or: systemctl reload caddy
    ```
 

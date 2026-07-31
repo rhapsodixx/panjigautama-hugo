@@ -14,3 +14,11 @@ tmp/
 scripts/.venv/
 __pycache__/
 *.pyc
+.worktrees/
+.superpowers/
+
+# SSH deploy keys — never commit (use gh secret set / local path only)
+panjigautama-hugo-deploy
+panjigautama-hugo-deploy.pub
+**/panjigautama-hugo-deploy
+**/panjigautama-hugo-deploy.pub
