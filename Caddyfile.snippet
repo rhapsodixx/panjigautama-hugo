@@ -1,0 +1,6 @@
+# Merge into the host Caddyfile (TLS already handled by host Caddy).
+# Adjust upstream if Compose publishes a different port/host.
+panjigautama.com, www.panjigautama.com {
+	encode gzip
+	reverse_proxy 127.0.0.1:8080
+}

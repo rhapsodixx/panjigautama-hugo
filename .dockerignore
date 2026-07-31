@@ -1,0 +1,8 @@
+.git
+scripts/.venv
+site/public
+**/__pycache__
+*.md
+!site/content/**/*.md
+wordpress-backup
+docs
