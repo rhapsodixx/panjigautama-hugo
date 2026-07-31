@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:wp="http://wordpress.org/export/1.2/">
+  <channel>
+    <item>
+      <title><![CDATA[Hello World]]></title>
+      <content:encoded><![CDATA[<p>Hi <img src="https://panjigautama.com/wp-content/uploads/2021/01/vue-1.png" /></p>]]></content:encoded>
+      <wp:post_name><![CDATA[hello-world]]></wp:post_name>
+      <wp:post_type><![CDATA[post]]></wp:post_type>
+      <wp:status><![CDATA[publish]]></wp:status>
+      <wp:post_date><![CDATA[2021-01-15 10:00:00]]></wp:post_date>
+      <wp:post_modified><![CDATA[2021-01-16 11:00:00]]></wp:post_modified>
+      <category domain="category" nicename="management"><![CDATA[Management]]></category>
+      <category domain="post_tag" nicename="notes"><![CDATA[notes]]></category>
+    </item>
+    <item>
+      <title><![CDATA[Drafty]]></title>
+      <content:encoded><![CDATA[<p>nope</p>]]></content:encoded>
+      <wp:post_name><![CDATA[drafty]]></wp:post_name>
+      <wp:post_type><![CDATA[post]]></wp:post_type>
+      <wp:status><![CDATA[draft]]></wp:status>
+      <wp:post_date><![CDATA[2021-02-01 10:00:00]]></wp:post_date>
+      <wp:post_modified><![CDATA[2021-02-01 10:00:00]]></wp:post_modified>
+    </item>
+  </channel>
+</rss>
