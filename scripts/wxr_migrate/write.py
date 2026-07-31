@@ -39,6 +39,7 @@ def write_content(
             continue
         if item.post_type not in {"post", "page"}:
             continue
+        # Include privacy-policy even when WordPress status is draft; exclude sprout-test above.
         is_privacy_draft = (
             item.post_type == "page"
             and item.slug == "privacy-policy"

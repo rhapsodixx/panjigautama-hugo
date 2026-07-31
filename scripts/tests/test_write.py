@@ -1,6 +1,25 @@
 from pathlib import Path
+
+import pytest
+
 from wxr_migrate.parse import ContentItem
 from wxr_migrate.write import write_content
+
+
+def _item(**overrides) -> ContentItem:
+    defaults = {
+        "title": "Title",
+        "slug": "slug",
+        "date": "2021-01-01 10:00:00",
+        "lastmod": "2021-01-01 10:00:00",
+        "status": "publish",
+        "post_type": "post",
+        "categories": [],
+        "tags": [],
+        "content_html": "<p>body</p>",
+    }
+    defaults.update(overrides)
+    return ContentItem(**defaults)
 
 
 def test_write_content_posts_and_pages(tmp_path: Path):
@@ -98,3 +117,22 @@ def test_write_skips_sprout_test_and_includes_privacy_policy_draft(tmp_path: Pat
     assert 'title: "Privacy Policy"' in privacy
     assert "Privacy" in privacy
     assert (tmp_path / "about-me.md").exists()
+
+
+def test_write_content_rejects_empty_title(tmp_path: Path):
+    with pytest.raises(ValueError, match="Empty title"):
+        write_content([_item(title="", slug="hello")], {}, tmp_path)
+
+
+def test_write_content_rejects_empty_slug(tmp_path: Path):
+    with pytest.raises(ValueError, match="Empty slug"):
+        write_content([_item(title="Hello", slug="")], {}, tmp_path)
+
+
+def test_write_content_rejects_duplicate_slug(tmp_path: Path):
+    items = [
+        _item(title="First", slug="duplicate"),
+        _item(title="Second", slug="duplicate"),
+    ]
+    with pytest.raises(ValueError, match="Duplicate slug"):
+        write_content(items, {}, tmp_path)

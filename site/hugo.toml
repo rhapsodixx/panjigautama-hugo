@@ -3,8 +3,23 @@ theme = "hugo-bearblog"
 title = "Panji Gautama"
 author = "Panji Gautama"
 copyright = "Copyright © Panji Gautama"
-languageCode = "en-US"
+defaultContentLanguage = "en"
 enableRobotsTXT = true
+
+[languages.en]
+  label = "English"
+  locale = "en-US"
+  weight = 1
+
+[[menu.main]]
+  name = "Blog"
+  url = "/blog/"
+  weight = 1
+
+[[menu.main]]
+  name = "About"
+  url = "/about-me/"
+  weight = 2
 
 # Keep taxonomies enabled (do NOT copy Bear Blog exampleSite disableKinds)
 [taxonomies]

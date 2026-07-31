@@ -14,7 +14,7 @@
 | # | Criterion | Path / check | HTTP / result | Pass |
 |---|-----------|--------------|---------------|------|
 | 1 | Homepage loads | `/` | 200 | Pass |
-| 2 | Blog index lists posts | `/blog/` | 200; `ul.blog-posts` with 46 entries | Pass |
+| 2 | Blog index lists posts | `/blog/` | 200; `ul.blog-posts` with 45 entries | Pass |
 | 3 | Sample post: Muhasabah | `/muhasabah/` | 200 | Pass |
 | 3 | Sample post: API Key Best Practices | `/api-key-best-practices/` | 200 | Pass |
 | 3 | Sample post: Silent Meeting | `/silent-meeting/` | 200 | Pass |
