@@ -50,3 +50,15 @@ curl -s http://127.0.0.1:8080/ | grep -o 'G-60P3WJPWMJ'
 ## Summary
 
 **Overall: Pass** — all design success criteria met via Hugo build + static file server.
+
+## Compose verification (network `web`)
+
+After ADR-004 revision, Compose does **not** publish `127.0.0.1:8080`. Verify with:
+
+```bash
+docker network ls | grep -w web || docker network create web
+docker compose build && docker compose up -d
+docker run --rm --network web curlimages/curl:8.5.0 -sI http://panjigautama-hugo:8080/ | head -1
+```
+
+Historical checks above used Hugo `public/` + `python3 -m http.server` or an older Compose port publish; those results remain valid for content QA.
