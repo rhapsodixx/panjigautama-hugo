@@ -92,11 +92,13 @@ If build or curl fails, **stop here**. Do not merge the Caddy snippet. Fix Compo
 Replace or update the site block with the contents of [`Caddyfile.snippet`](../Caddyfile.snippet):
 
 ```caddy
-panjigautama.com, www.panjigautama.com {
+panjigautama.com, www.panjigautama.com, blog.kamisamanosumopod.my.id {
 	encode gzip
 	reverse_proxy 127.0.0.1:8080
 }
 ```
+
+**DNS (before or with this step):** point `blog.kamisamanosumopod.my.id` at this VPS (A/AAAA or CNAME) so Caddy can issue its certificate. Apex `panjigautama.com` / `www` as you already have them.
 
 Validate and reload (adjust paths/commands for your install):
 
@@ -117,8 +119,10 @@ Confirm HTTPS from the VPS or your workstation:
 
 ```bash
 curl -sI https://panjigautama.com/ | head -1
+curl -sI https://blog.kamisamanosumopod.my.id/ | head -1
 ```
 
+Note: Hugo `baseURL` stays `https://panjigautama.com`, so some absolute links in HTML still point at the apex domain. Paths and content work on both hosts.
 ---
 
 ## 6. Stop WordPress and LiteSpeed (do not delete)
@@ -144,6 +148,7 @@ Run after Caddy points at Hugo. See also [`docs/qa-checklist.md`](./qa-checklist
 | Check | Command / action | Expected |
 |-------|------------------|----------|
 | HTTPS homepage | `curl -sI https://panjigautama.com/` | `200` |
+| Alias domain homepage | `curl -sI https://blog.kamisamanosumopod.my.id/` | `200` |
 | Sample posts | `/muhasabah/`, `/api-key-best-practices/`, `/silent-meeting/` | `200`, content renders |
 | Static pages | `/about-me/`, `/privacy-policy/` | `200` |
 | Blog index | `/blog/` | `200`, post list |
@@ -156,12 +161,14 @@ Run after Caddy points at Hugo. See also [`docs/qa-checklist.md`](./qa-checklist
 Quick curl loop:
 
 ```bash
-for p in / /blog/ /muhasabah/ /about-me/ /images/favicon.png /categories/meeting/; do
-  echo -n "$p "
-  curl -s -o /dev/null -w "%{http_code}\n" "https://panjigautama.com$p"
+for host in https://panjigautama.com https://blog.kamisamanosumopod.my.id; do
+  echo "== $host =="
+  for p in / /blog/ /muhasabah/ /about-me/ /images/favicon.png /categories/meeting/; do
+    echo -n "$p "
+    curl -s -o /dev/null -w "%{http_code}\n" "$host$p"
+  done
 done
 ```
-
 ---
 
 ## 8. Rollback (within 48–72 h window)

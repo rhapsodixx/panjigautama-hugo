@@ -12,9 +12,11 @@ The production VPS already runs Caddy as the TLS/edge reverse proxy and hosts ot
 Validation happens locally first; production cutover happens in a maintenance window after QA.
 
 ## Decision
-Use a multi-stage Dockerfile: build the Hugo site in one stage, serve `public/` with a small static server in the runtime stage. On the VPS, `docker compose build && up` produces and runs the container. Host Caddy terminates HTTPS for `panjigautama.com` and reverse-proxies to the container’s internal port.
+Use a multi-stage Dockerfile: build the Hugo site in one stage, serve `public/` with a small static server in the runtime stage. On the VPS, `docker compose build && up` produces and runs the container. Host Caddy terminates HTTPS for the blog’s public hostnames and reverse-proxies to the container’s internal port (`127.0.0.1:8080`).
 
 Provide a `Caddyfile.snippet` documenting the site block to merge into the host Caddy config.
+
+**Which hostnames** appear on that block, and whether aliases redirect or serve content, is decided in [ADR-005](./ADR-005-multi-domain-aliases.md).
 
 ## Alternatives Considered
 
@@ -36,4 +38,5 @@ Provide a `Caddyfile.snippet` documenting the site block to merge into the host 
 ## Consequences
 - Deploy docs must cover Compose **and** host Caddy reload
 - Container must not publish conflicting public 80/443 if host Caddy owns them
+- Hostname list and alias policy: see ADR-005 (canonical Hugo `baseURL` remains the apex)
 - Rollback = repoint Caddy to WordPress/LiteSpeed while that stack remains recoverable (~48–72h)

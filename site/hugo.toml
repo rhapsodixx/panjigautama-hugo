@@ -31,6 +31,10 @@ enableRobotsTXT = true
   categories = "/categories/:slug/"
   tags = "/tags/:slug/"
 
+[pagination]
+  pagerSize = 10
+  path = "page"
+
 [params]
   description = "Notes on engineering, product, and personal growth."
   favicon = "images/favicon.png"

@@ -1,6 +1,8 @@
 # Merge into the host Caddyfile (TLS already handled by host Caddy).
 # Adjust upstream if Compose publishes a different port/host.
-panjigautama.com, www.panjigautama.com {
+# Both apex and alias domains serve the same Hugo container (multi-domain option A).
+# Canonical Hugo baseURL remains https://panjigautama.com
+panjigautama.com, www.panjigautama.com, blog.kamisamanosumopod.my.id {
 	encode gzip
 	reverse_proxy 127.0.0.1:8080
 }

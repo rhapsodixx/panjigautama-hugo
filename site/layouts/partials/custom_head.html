@@ -1,3 +1,6 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <!-- Google Analytics GA4 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-60P3WJPWMJ"></script>
 <script>
@@ -6,3 +9,47 @@
   gtag('js', new Date());
   gtag('config', 'G-60P3WJPWMJ');
 </script>
+<style>
+  :root {
+    --font-main: "Outfit", Verdana, sans-serif;
+    --font-secondary: "Outfit", Verdana, sans-serif;
+  }
+
+  /* Homepage post list: bullets, no dates */
+  ul.home-posts {
+    list-style-type: disc;
+    padding-left: 1.25em;
+    margin: 1em 0 0;
+  }
+  ul.home-posts li {
+    display: list-item;
+    margin: 0.35em 0;
+  }
+
+  /* Inline pagination: · separators, no list bullets */
+  .pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0;
+    margin: 1.5em 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .pagination a,
+  .pagination .pagination-current {
+    padding: 0.15em 0.1em;
+  }
+  .pagination-sep {
+    margin: 0 0.45em;
+    color: var(--text-color);
+    opacity: 0.45;
+    user-select: none;
+  }
+  .pagination-current {
+    font-weight: 600;
+    color: var(--heading-color);
+  }
+</style>

@@ -1,0 +1,19 @@
+{{ define "main" }}
+{{ .Content }}
+{{ $pages := where .Site.RegularPages "Section" "blog" }}
+{{ $paginator := .Paginate $pages }}
+<content>
+  <ul class="home-posts">
+    {{ range $paginator.Pages }}
+    <li>
+      <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+    </li>
+    {{ else }}
+    <li>
+      No posts yet
+    </li>
+    {{ end }}
+  </ul>
+  {{ partial "pagination.html" . }}
+</content>
+{{ end }}

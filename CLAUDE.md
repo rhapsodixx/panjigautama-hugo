@@ -15,6 +15,7 @@ Personal blog for [panjigautama.com](https://panjigautama.com), migrating from W
 | Local serve | `hugo server` (site root under `site/`) |
 | Production | Docker multi-stage build + Compose on VPS |
 | Edge | Existing host **Caddy** reverse-proxy (TLS) → blog container |
+| Domains | `panjigautama.com`, `www.panjigautama.com`, `blog.kamisamanosumopod.my.id` (same site; canonical `baseURL` = panjigautama.com) |
 | Repo | Public GitHub: `panjigautama-hugo` |
 
 ## Documentation
@@ -41,7 +42,9 @@ docs/superpowers/   # Specs and plans
 - Public post/page URLs stay **root-level**: `/<slug>/`
 - Do **not** add `/wp-content/` redirects unless a new ADR supersedes ADR-003
 - Comments are out of scope for v1 (third-party later is fine)
-- Prefer editing Markdown/content and config over theme forks; use Bear Blog `custom_head` / partials for GA and favicon
+- Prefer editing Markdown/content and config over theme forks; use Bear Blog `custom_head` / partials for GA, favicon, fonts, and pagination chrome
+- Multi-host aliases serve the same site; canonical `baseURL` is `https://panjigautama.com` (ADR-005)
+- Homepage presentation (Outfit, bulleted titles, Hugo pagination): ADR-006
 
 ## Before Making Changes
 
@@ -55,5 +58,7 @@ docs/superpowers/   # Specs and plans
 | [ADR-002](./docs/decisions/ADR-002-root-level-permalinks.md) | Root-level permalinks |
 | [ADR-003](./docs/decisions/ADR-003-media-under-images.md) | Media under `/images/` (no `/wp-content/` redirects) |
 | [ADR-004](./docs/decisions/ADR-004-compose-build-host-caddy.md) | Compose build on VPS + host Caddy reverse proxy |
+| [ADR-005](./docs/decisions/ADR-005-multi-domain-aliases.md) | Multi-domain aliases serve same site (no redirect) |
+| [ADR-006](./docs/decisions/ADR-006-homepage-presentation.md) | Homepage: Outfit, bullets, Hugo pagination |
 
 If a change contradicts an ADR, update or supersede the ADR before implementing.
