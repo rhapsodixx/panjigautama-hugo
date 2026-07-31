@@ -41,7 +41,7 @@ fi
 REMOTE_CMD=$(cat <<EOF
 set -euo pipefail
 cd "${DEPLOY_PATH}"
-git pull
+git pull --ff-only
 git submodule update --init --recursive
 docker compose build && docker compose up -d
 docker compose ps
