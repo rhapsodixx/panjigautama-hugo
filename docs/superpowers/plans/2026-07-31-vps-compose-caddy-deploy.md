@@ -316,7 +316,7 @@ First VPS clone must exist before the Action can `cd` and `git pull` (see cutove
 
 Add at the end of the file (exact content):
 
-```markdown
+````markdown
 ## Compose verification (network `web`)
 
 After ADR-004 revision, Compose does **not** publish `127.0.0.1:8080`. Verify with:
@@ -328,7 +328,7 @@ docker run --rm --network web curlimages/curl:8.5.0 -sI http://panjigautama-hugo
 ```
 
 Historical checks above used Hugo `public/` + `python3 -m http.server` or an older Compose port publish; those results remain valid for content QA.
-```
+````
 
 - [ ] **Step 2: Verify `CLAUDE.md` Deploy / Edge rows mention git rebuild and `web`**
 
