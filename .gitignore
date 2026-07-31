@@ -12,3 +12,5 @@ tmp/
 .env.*
 !.env.example
 scripts/.venv/
+__pycache__/
+*.pyc
